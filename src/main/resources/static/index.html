@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+<head>
+    <title>Neovis.js Simple Example</title>
+    <style type="text/css">
+        html, body {
+            font: 16pt arial;
+        }
+
+        #viz {
+            width: 900px;
+            height: 700px;
+            border: 1px solid lightgray;
+            font: 22pt arial;
+        }
+    </style>
+    <script src="https://unpkg.com/neovis.js@2.0.2"></script>
+</head>
+<body onload="draw()">
+<div id="viz"></div>
+
+<script type="text/javascript">
+
+    let neoViz;
+
+    function draw() {
+        const config = {
+            containerId: "viz",
+            neo4j: {
+                serverUrl: "bolt://42.192.22.196/:7687",
+                serverUser: "neo4j",
+                serverPassword: "admin123",
+            },
+            labels: {
+                Character: {
+                    label: "name",
+                    value: "pagerank",
+                    group: "community",
+                    [NeoVis.NEOVIS_ADVANCED_CONFIG]: {
+                        function: {
+                            title: (node) => viz.nodeToHtml(node, [
+                                "name",
+                                "pagerank"
+                            ])
+                        }
+                    }
+                }
+            },
+            relationships: {
+                INTERACTS: {
+                    value: "weight"
+                }
+            },
+            initialCypher: "MATCH (n)-[r:elecApply]->(m) RETURN *"
+        };
+
+        neoViz = new NeoVis.default(config);
+        neoViz.render();
+    }
+</script>
+</body>
+</html>
